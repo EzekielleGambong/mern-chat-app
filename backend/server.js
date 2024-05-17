@@ -6,19 +6,43 @@ const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
-const colors = require("colors");  // Import the colors library
+const colors = require("colors"); // Import the colors library
 
-dotenv.config();  // Load environment variables
+dotenv.config(); // Load environment variables
 
-connectDB();  // Connect to MongoDB
+connectDB(); // Connect to MongoDB
 
-const app = express();  // Initialize Express application
+const User = require("../backend/models/userModel");
+const app = express(); // Initialize Express application
 
-app.use(express.json());  // To accept JSON data
+app.use(express.json()); // To accept JSON data
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
+
+app.post("/api/updatePic", async (req, res) => {
+  const { pic, user } = req.body;
+  console.log(pic, user.email);
+
+  try {
+    const result = await User.updateOne(
+      {
+        email: user.email,
+      },
+      {
+        $set: {
+          pic: pic,
+        },
+      }
+    );
+    console.log(result);
+    res.status(200).send("Updated Image");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Failed to update image");
+  }
+});
 
 // --------------------------deployment------------------------------
 const __dirname1 = path.resolve();
@@ -83,7 +107,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.off("setup", () => {
+  socket.on("disconnect", () => {
     console.log("USER DISCONNECTED");
     socket.leave(userData._id);
   });

@@ -26,6 +26,7 @@ import { useToast } from "@chakra-ui/toast";
 import ChatLoading from "../ChatLoading";
 import { Spinner } from "@chakra-ui/spinner";
 import ProfileModal from "./ProfileModal";
+import EditModal from "./EditProfile"
 import NotificationBadge from "react-notification-badge";
 import { Effect } from "react-notification-badge";
 import { getSender } from "../../config/ChatLogics";
@@ -142,7 +143,7 @@ function SideDrawer() {
           </Button>
         </Tooltip>
         <Text fontSize="2xl" fontFamily="Work sans">
-          Talk-A-Tive
+          PETPALS
         </Text>
         <div>
           <Menu>
@@ -185,7 +186,11 @@ function SideDrawer() {
               </ProfileModal>
               <MenuDivider />
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-            </MenuList>
+              <MenuDivider/>
+                <EditModal user={user}>
+                  <MenuItem>Edit Profile</MenuItem>
+                </EditModal>
+              </MenuList>
           </Menu>
         </div>
       </Box>
